@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+
+ <link rel="stylesheet" type="text/css" href="css/bubble.css">
+
+
+<title>canvas10</title>
+
+
+
+</head>
+<body>
+	<div style="border: 3px solid #73AD21; margin-bottom: 10px;display:block">The
+		header for the navigation</div>
+
+
+	<div
+		style="width: 356px; height: auto; background: #eeeeee; position: relative;">
+		<div id="editor-container">
+			<canvas id="myCanvas" width="350" style="border: 3px solid #73AD21;">
+		</canvas>
+		</div>
+
+		<!-- 		<div style="padding: 20px 0;">This is the second element</div> -->
+
+		<div class="tb"
+			style="width: auto; height: auto; background: green; opacity: 0.8; color: #FFF; text-align: center; top: 0; position: absolute; right: 0;">
+
+
+
+			<button class="menu" style="background-color: rgb(204, 255, 153, 0);">
+				&#9776;</button>
+
+
+
+
+			<div class="bgroup" id="bg1">
+				<button id="insert" class="hidden-button" onclick="editAction('0')"></button>
+
+				<label for="insert" title="New bubble" class="menu">N</label>
+
+
+
+
+				<button title="Delete bubble" id="delete" class="hidden-button"
+					onclick="editAction('1')"></button>
+				<label for="delete" title="Delete bubble" class="menu">D </label> <input
+					type="file" name="file" id="file" class="hidden-button" /> <label
+					for="file" title="Upload image" class="menu">U</label>
+
+
+
+
+
+			</div>
+
+		</div>
+	</div>
+	<div style="border: 3px solid #73AD21;">The footer</div>
+
+
+
+
+
+
+
+	<script>
+	
+	INSERT=0;
+	DELETE=1;
+		var c = document.getElementById("myCanvas");
+		var ctx = c.getContext("2d");
+		
+		
+		
+		
+		
+		var mouseIsDown = false;
+		var drag=false;
+		var lastX = 0;
+		var lastY = 0;
+		var shapeId=0;
+		var selectedShape = null;
+		textarea = null;
+		delBtn = null;
+		
+		var bubbleFont = ctx.font = "18px Comic Sans MS";
+		var fontH = 18;
+var touchMove=false;
+		c.addEventListener("mousedown", mouseDownListener, false);
+		c.addEventListener('touchstart',function(){
+		    console.log("touchstart");
+		  
+			
+		});
+		//for whole documant
+		//window.addEventListener("mouseup", mouseUpListener, false);
+		//window.addEventListener("mousemove", mouseMoveListener, false);
+		//for canvas only
+		c.addEventListener("mouseup", mouseUpListener, false);
+		c.addEventListener('touchend',function(){
+		    console.log("touchend");
+		    mouseIsDown = false;
+		    if(touchMove){
+		    unselect(selectedShape);
+		    selectedShape=null;
+		    touchMove=false;
+		    }
+		});
+
+		c.addEventListener("mousemove", mouseMoveListener, false);
+		c.addEventListener('touchmove',touchMoveListener,false);
+
+		
+		document.getElementById('file').addEventListener('change',
+				handleFileSelect, false);
+		
+
+		var imageObj = new Image();
+
+		imageObj.onload = function() {
+			//console.log("loaded");
+			var naturalH = imageObj.naturalHeight;
+			var naturalW = imageObj.naturalWidth;
+			console.log("width: " + naturalW + " heigth " + naturalH);
+			//scale it 
+			var imgRatio = c.width / naturalW;
+
+			c.height = Math.ceil(naturalH * imgRatio);
+			//c.width = 300;
+			drawAllShips();
+		};
+		imageObj.src = 'images/loewe1.jpg';
+
+		function editAction(e) {
+			
+			//quick an dirty without command and commandstack
+			
+			if(e)console.log("show: "+e);
+			if(parseInt(e)==INSERT){
+				if(e)console.log("insert: "+e);	
+				makeShip("a bubble",(c.width/2),(c.height/2),10,10,"green");	
+				drawAllShips();
+				
+			}else if(parseInt(e)==DELETE){
+				
+				if(selectedShape){
+					//find in array
+					for(i=0;i<bubbles.length;i++){
+						var s=bubbles[i];
+						if (s.id==selectedShape.id){
+						/* s.stroke="red";
+						
+						drawBubbleText(s); */
+						bubbles.splice(i,1);
+						selectedShape=null;
+						drawAllShips();
+						break;
+						}
+						
+					}
+					
+					
+					
+				}
+				
+				
+				if(e)console.log("delete: "+e);
+				
+			}
+			
+			
+		}
+		
+		function handleFileSelect(evt) {
+
+			var file = evt.target.files[0];
+			//console.log("evt: " + evt + "file: " + file);
+			var reader = new FileReader();
+			reader.onload = function(fileObject) {
+				var data = fileObject.target.result;
+
+				// Create an image object
+				var image = new Image();
+				image.onload = function() {
+
+					//window.imageSrc = this;
+					imageObj = this;
+
+					//console.log("loaded");
+					var naturalH = imageObj.naturalHeight;
+					var naturalW = imageObj.naturalWidth;
+					//console.log("width: " + naturalW + " heigth " + naturalH);
+					//scale it 
+					var imgRatio = c.width / naturalW;
+
+					c.height = Math.floor(naturalH * imgRatio);
+					
+					drawAllShips();
+
+				}
+
+				// Set image data to background image.
+				image.src = data;
+				//console.log("imaage.src: " + image.src);
+
+			};
+			reader.readAsDataURL(file);
+
+		}
+		function unselect(shape){
+			console.log("selected-shape="+shape);
+			
+			if(shape){
+				for(i=0;i<bubbles.length;i++){
+					var s=bubbles[i];
+					if (s.id==shape.id){
+					s.stroke="green";
+					drawBubbleText(s);
+					break;
+					}
+					
+				}
+				
+				
+				
+			}
+			
+		}
+
+		function mouseDownListener(evt) {
+			console.log("mouse down");
+			
+			if (textarea) {
+				textarea.remove();
+				textarea = null;
+				mouseIsDown = false;//no drag when visible
+				unselect(selectedShape);
+				selectedShape =null;
+				return;
+				//drawAllShips();
+
+			}
+ 			mouseIsDown = true;
+			
+			//console.log("mouse down  in canvas x:"+evt.clientX+" y:"+evt.clientY+" offX:"+evt.offsetX);
+			//console.log(bubbles.length);
+			
+			mouseX = parseInt(evt.offsetX);
+			mouseY = parseInt(evt.offsetY);
+			lastX = mouseX;
+			lastY = mouseY;
+			
+			var oldN='';
+			var oldId=-1;
+			if(selectedShape){
+				
+				oldId=selectedShape.id;
+			}
+			
+			if (!selectShape(mouseX, mouseY)) {
+				
+			unselect(selectedShape);
+				selectedShape = null;
+				return;
+				
+			}
+			
+			var newId=selectedShape.id;
+			
+			
+			
+			
+			
+			if(oldId==newId){
+				
+				//console.log(selectedShape);
+				
+				
+				
+				var event = new CustomEvent("doubleSelect", { "detail": {message:"Shape selected again" }});
+		          // Dispatch/Trigger/Fire the event
+		              c.dispatchEvent(event);
+		              mouseIsDown = false;//no drag when textarea visible	  
+		          
+		          
+		          
+			          if (!textarea) {
+							textarea = document.createElement('textarea');
+							textarea.id = 'bubbletextarea';
+							document.body.appendChild(textarea);
+							textarea.oninput = textChangeListener;
+						}
+						
+						
+						textarea.value = selectedShape.name;
+						textarea.style.top = evt.clientY + 'px';
+						textarea.style.left = evt.clientX + 'px';
+						textarea.style.position = "absolute"; 
+		         
+		          
+			}
+			
+			
+			
+
+		}
+		function mouseUpListener(evt) {
+			console.log("mouse up");
+			mouseIsDown = false;
+			if(drag){
+				console.log("drag move end");
+			unselect(selectedShape);
+				selectedShape=null;
+				drag=false;
+				
+			}
+
+			return false;
+
+		}
+		function touchMoveListener(evt){
+			//first finish text insert
+			if(textarea)return;
+			touchMove=true;
+			 if (!selectedShape) {
+					return;
+				}
+			var rect = c.getBoundingClientRect();
+			var cx=parseInt(	evt.changedTouches[0].clientX);
+			var cy=parseInt(	evt.changedTouches[0].clientY);
+			var mouseX=Math.max((cx-rect.left),0);
+			var mouseY=cy-rect.top;
+			console.log("touchmove: x "+mouseX+" y: "+mouseY);
+			var ship = selectedShape;
+			
+			ship.x += (mouseX - lastX);
+			ship.y += (mouseY - lastY);
+
+
+			// update the lastXY to the current touch position
+			lastX = mouseX;
+			lastY = mouseY;
+
+			// draw all ships in their new positions
+			drawAllShips();
+			
+			
+			
+			
+		}
+		function mouseMoveListener(evt) {
+
+			//if the mouseIsDown flag is’nt set, no work to do
+			//console.log(mouseIsDown);
+			if (!mouseIsDown) {
+				return;
+			}
+			console.log("mouse move");
+			drag=true;
+			//get rid of a possible textarea
+			 if (textarea) {
+				textarea.remove();
+				textarea = null;
+				drawAllShips();
+
+			}
+		
+
+			mouseX = parseInt(evt.offsetX);
+			mouseY = parseInt(evt.offsetY);
+
+			// for each ship in the ships array
+			// use context.isPointInPath to test if it’s being dragged
+			//console.log("mouse move " + lastX + " " + lastY);
+			//selectShape(mouseX,mouseY);
+			var ship = selectedShape;
+			if (!selectedShape) {
+				return;
+			}
+			ship.x += (mouseX - lastX);
+			ship.y += (mouseY - lastY);
+			// update the lastXY to the current mouse position
+			lastX = mouseX;
+			lastY = mouseY;
+
+			// draw all ships in their new positions
+			drawAllShips();
+
+		}
+		
+			
+
+	
+		
+		
+
+		var bubbles = [];
+
+		// make some ship
+		makeShip("Hi, wie geht´s dir?", 20, 30, 50, 25, "#FAF0E6");
+		makeShip("Ausgezeichnet!\nDanke.", 40, 100, 30, 25, "#FAF0E6");
+		//makeShip("Wer bistn du?", 20, 170, 50, 25, "white");
+		//makeShip("Nenn mich Vater.", 120, 40, 30, 25, "skyblue");
+		drawAllShips();
+		function textChangeListener(evt) {
+			var id = evt.target.id;
+			var text = evt.target.value;
+
+			//console.log(text);
+
+			if (!selectedShape) {
+				return;
+			}
+			selectedShape.name = text;
+			drawAllShips();
+
+		}
+
+		
+
+		function selectShape(x, y) {
+			//console.log("select?");
+		
+			for (var i = (bubbles.length-1);i>=0; i--) {
+				var s = bubbles[i];
+
+				//ctx.beginPath();
+				//ctx.rect(s.x, s.y, 30, 20);
+				if (s.inPath(x, y)) {
+					//console.log("selected " + s.name);
+				//s.path();
+				//ctx.strokeStyle="red";
+				//ctx.stroke();
+				
+				//AADDD unselect former selected
+				if(selectedShape){
+					if(!(selectedShape.id==s.id)){
+						console.log("former: "+selectedShape.name +" selected " + s.name);
+						selectedShape.stroke="green";
+						drawBubbleText(selectedShape);
+					}
+					
+				}
+				
+				s.stroke="magenta";
+				drawBubbleText(s);
+					selectedShape = s;
+					var event = new CustomEvent("name-of-event", { "detail": {message:"Found",shape:s }});
+		          // Dispatch/Trigger/Fire the event
+			          c.dispatchEvent(event);
+					
+					
+					return true;
+				}
+
+			}
+			var event = new CustomEvent("name-of-event", { "detail": {message:"Shape not found" }});
+	          // Dispatch/Trigger/Fire the event
+		          c.dispatchEvent(event);
+			
+			return false;
+
+		}
+
+		function drawAllShips() {
+			ctx.clearRect(0, 0, c.width, c.height);
+			if (imageObj) {
+				ctx.drawImage(imageObj, 0, 0, c.width, c.height);
+			}
+			for (var i = (bubbles.length-1); i >= 0; i--) {
+				var ship = bubbles[i];
+				//drawShip(ship);
+				drawBubbleText(ship);
+
+			}
+		}
+
+		function makeShip(name, x, y, width, height, fill) {
+			var ship = {
+				id: -1,
+				name : name,
+				x : x,
+				y : y,
+				w : width,
+				h:height ,
+				
+				fill : "#FAF0E6",
+				stroke: "green",
+				inPath : function(x, y) {
+					this.path();
+					return ctx.isPointInPath(x, y);
+
+				},
+				path : function() {
+					ctx.beginPath();
+					ctx.moveTo(ship.x, ship.y);
+					ctx.lineTo(ship.x + ship.w, ship.y);
+					//ctx.lineTo(ship.right + 10, ship.y + ship.height / 2);
+					ctx.lineTo(ship.x + ship.w, ship.y + ship.h);
+					//ctx.lineTo(ship.x+ship.width, ship.y+ship.heigth);
+					ctx.lineTo(ship.x, ship.y + ship.h);
+					ctx.closePath();
+
+				}
+
+			}
+			ship.id=shapeId++;
+			bubbles.push(ship);
+			return (ship);
+
+		}
+		function drawShip(ship) {
+			
+			ctx.fillStyle = ship.fill;
+			/* ship.path();
+			ctx.fill();
+			
+			
+		    
+			
+			ctx.lineWidth = 3;
+			ctx.stroke(); */
+			//console.log("draw h:"+ship.h+ " "+ship.heigth);
+			ctx.strokeStyle=ship.stroke;
+			drawABubble(ship.x,ship.y,ship.w,ship.h,5);
+		}
+		
+		
+		c.addEventListener("doubleSelect", function(e) {
+	    	
+	    	  console.log(e.detail); // Prints "Example of an event"
+	    	  
+	    	  
+	    	});
+		function drawBubbleText(shape) {
+			var text = shape.name;
+			var res = text.split("\n");
+			var tl = 0;
+			var th = res.length * fontH;
+			ctx.font = bubbleFont;
+			for (i = 0; i < res.length; i++) {
+				tl = Math.max(tl, ctx.measureText(res[i]).width);
+			}
+			//padding
+			shape.w = tl + 10;
+			shape.h = th + 5;
+			//shape.h = th + 5;
+			drawShip(shape);
+
+			ctx.fillStyle = "black";
+
+			for (i = 0; i < res.length; i++) {
+
+				ctx.fillText(res[i], shape.x + 5, (shape.y + (i + 1) * fontH));
+			}
+
+		}
+		function drawABubble(x,y,w,h,radius,px,py){
+			 var r = x + w;
+			 var b = y + h;
+			 if(py<y || py>y+h){
+			  var con1 = Math.min(Math.max(x+radius,px-10),r-radius-20);
+			  var con2 = Math.min(Math.max(x+radius+20,px+10),r-radius);
+			 }
+			 else{
+			  var con1 = Math.min(Math.max(y+radius,py-10),b-radius-20);
+			  var con2 = Math.min(Math.max(y+radius+20,py+10),b-radius);
+			 }
+			 var dir;
+			 if(py < y) dir = 2;
+			 if(py > y) dir = 3;
+			 if(px < x && py>=y && py<=b) dir = 0;
+			 if(px > x && py>=y && py<=b) dir = 1;
+			 if(px >= x && px <= r && py >= y && py <= b) dir = -1;
+			 //ctx.clearRect(0,0,400,400);
+			 ctx.beginPath();
+			 //ctx.strokeStyle="black";
+			 ctx.lineWidth="2";
+			 ctx.moveTo(x+radius,y);
+			 if(dir==2){
+			  ctx.lineTo(con1,y);
+			  ctx.lineTo(px,py);
+			  ctx.lineTo(con2,y);
+			  ctx.lineTo(r-radius,y);
+			 }
+			 else ctx.lineTo(r-radius,y);
+			 ctx.quadraticCurveTo(r,y,r,y+radius);
+			 if(dir==1){
+			  ctx.lineTo(r,con1);
+			  ctx.lineTo(px,py);
+			  ctx.lineTo(r,con2);
+			  ctx.lineTo(r,b-radius);
+			 }
+			 else ctx.lineTo(r,b-radius);
+			 ctx.quadraticCurveTo(r, b, r-radius, b);
+			 if(dir==3){
+			  ctx.lineTo(con2,b);
+			  ctx.lineTo(px,py);
+			  ctx.lineTo(con1,b);
+			  ctx.lineTo(x+radius,b);
+			 }
+			 else ctx.lineTo(x+radius,b);
+			 ctx.quadraticCurveTo(x, b, x, b-radius);
+			 if(dir==0){
+			  ctx.lineTo(x,con2);
+			  ctx.lineTo(px,py);
+			  ctx.lineTo(x,con1);
+			  ctx.lineTo(x,y+radius);
+			 }
+			 else ctx.lineTo(x,y+radius);
+			 ctx.quadraticCurveTo(x, y, x+radius, y);
+			 ctx.fillStyle = "ivory";
+			ctx.fill();
+			//ctx.strokeStyle="blue"; 
+			 ctx.stroke();
+			}
+	</script>
+
+	<div id="out"></div>
+
+</body>
+</html>
