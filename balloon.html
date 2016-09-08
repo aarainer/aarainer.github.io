@@ -123,7 +123,7 @@
 	<div id = "download-area" class="modal">
 	
 	<div class="modal-content">
-	<a id="download-anchor" class="btn small" download="balloon.png" rel="nofollow" onclick="hideDownloadArea()"><strong>Download</strong></a><span>&nbsp;&nbsp;</span>
+	<a id="download-anchor" class="btn small" download="balloon.jpg" rel="nofollow" onclick="hideDownloadArea()"><strong>Download</strong></a><span>&nbsp;&nbsp;</span>
 	 
   
     	             <img id="image_display" style="width:100px;height:100px;" src=""/>
@@ -484,7 +484,7 @@ var touchMove=false;
 
 		}
 		function updateImageLocal(canvas) {
-	        var image_data = canvas.toDataURL("image/png");  
+	        var image_data = canvas.toDataURL("image/jpeg",0.2);  
 
 		var downloadArea=document.getElementById('download-area');
 		downloadArea.style.display="block";
@@ -494,7 +494,7 @@ var touchMove=false;
 		
 		var download = document.getElementById("download-anchor");
 		
-		download.href=thumb.src.replace("image/png", "image/octet-stream");
+		download.href=thumb.src.replace("image/jpeg", "image/octet-stream");
 				
 		}
 		function hideDownloadArea(){
