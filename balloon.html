@@ -608,7 +608,7 @@ var toolbar=false;
 		
 		
 		var download = document.getElementById("download-anchor");
-		
+		download.download= "balloon"+new Date().getTime()+".jpg";
 		download.href=thumb.src.replace("image/jpeg", "image/octet-stream");
 				
 		}
