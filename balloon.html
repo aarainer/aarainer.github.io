@@ -5,50 +5,47 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
- <link rel="stylesheet" type="text/css" href="css/bubble.css">
+<link rel="stylesheet" type="text/css" href="css/balloon.css">
 
 <style type="text/css">
 
 /* Modal Content */
 .modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    max-width: 360px;
-    float:left; 
-    
+	background-color: #fefefe;
+	margin: auto;
+	padding: 20px;
+	border: 1px solid #888;
+	max-width: 360px;
+	float: left;
 }
+
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    padding-left: 30px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	padding-top: 100px; /* Location of the box */
+	padding-left: 30px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0, 0, 0); /* Fallback color */
+	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
+
 .closeX {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-.closeX:hover,
-.closeX:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
 }
 
-
-
-
+.closeX:hover, .closeX:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
 </style>
 
 
@@ -59,7 +56,10 @@
 
 </head>
 <body>
-	<div style="border: 3px solid #73AD21; margin-bottom: 10px;display:block;max-width:360px;" ><span>Decorate your images with speech balloons!</span></div>
+	<div
+		style="border: 3px solid #73AD21; margin-bottom: 10px; display: block; max-width: 360px;">
+		<span>Decorate your images with speech balloons!</span>
+	</div>
 
 
 	<div
@@ -72,43 +72,37 @@
 		<!-- 		<div style="padding: 20px 0;">This is the second element</div> -->
 
 		<div class="tb"
-			style="width: auto; height: auto; background: green; opacity: 0.8; color: #FFF; text-align: center; top: 0; position: absolute; right: 0;">
+			style="width: auto; height: auto; background-color: rgba(0, 0, 0, 0.1); text-align: center; top: 0; position: absolute; right: 0;">
 
 
 
-			<button class="menu" style="background-color: rgb(204, 255, 153, 0);">
-				&#9776;</button>
+			<button class="menu" onclick="toggleToolbar()" >&#9776;</button>
 
 
 
 
 			<div class="bgroup" id="bg1">
+				<span style="opacity: 0">&nbsp;</span>
 				<button id="insert" class="hidden-button" onclick="editAction('0')"></button>
 
-				<label for="insert" title="New bubble" class="menu">N</label>
-
-
-
+				<label for="insert" title="New bubble" class="menu">N</label> <span>&nbsp;</span>
 
 				<button title="Delete bubble" id="delete" class="hidden-button"
 					onclick="editAction('1')"></button>
-				<label for="delete" title="Delete bubble" class="menu">X</label>
-				
-				<input
-					type="file" name="file" id="file" class="hidden-button" ></input> <label
-					for="file" title="Upload image" class="menu">U</label>
-					
+				<label for="delete" title="Delete bubble" class="menu">X</label> <span>&nbsp;</span>
+				<input type="file" name="file" id="file" class="hidden-button"></input>
+				<label for="file" title="Upload image" class="menu">U</label> <span>&nbsp;</span>
 				<!-- Download to local system  -->
 				<button title="Download" id="download" class="hidden-button"
 					onclick="editAction('2')"></button>
 				<label for="download" title="Download" class="menu">D</label>
-				
-				
-				
-				
-				
-				
-				 
+
+
+
+
+
+
+
 
 
 
@@ -119,19 +113,20 @@
 		</div>
 	</div>
 	<!--  modal part -->
-	
-	<div id = "download-area" class="modal">
-	
-	<div class="modal-content">
-	<a id="download-anchor" class="btn small" download="balloon.jpg" rel="nofollow" onclick="hideDownloadArea()"><strong>Download</strong></a><span>&nbsp;&nbsp;</span>
-	 
-  
-    	             <img id="image_display" style="width:100px;height:100px;" src=""/>
-    	            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    	             <span id="close-download" class="closeX" onclick="hideDownloadArea()">X</span>
-                 
-	</div>
-	
+
+	<div id="download-area" class="modal">
+
+		<div class="modal-content">
+			<a id="download-anchor" class="btn small" download="balloon.jpg"
+				rel="nofollow" onclick="hideDownloadArea()"><strong>Download</strong></a><span>&nbsp;&nbsp;</span>
+
+
+			<img id="image_display" style="width: 100px; height: 100px;" src="" />
+			<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span
+				id="close-download" class="closeX" onclick="hideDownloadArea()">X</span>
+
+		</div>
+
 	</div>
 
 
@@ -161,7 +156,7 @@
 		textarea = null;
 		delBtn = null;
 		
-		var bubbleFont = ctx.font = "18px Comic Sans MS";
+		var bubbleFont = ctx.font = "18px Arial";
 		var fontH = 18;
 var touchMove=false;
 /* close modal dialoges  */
@@ -218,17 +213,93 @@ var touchMove=false;
 			//c.width = 300;
 			drawAllShips();
 		};
-		imageObj.src = 'images/loewe1.jpg';
-
-		function editAction(e) {
+		imageObj.src = 'images/scream.jpg';
+var toolbar=false;
+		function toolbarOff(){
+			var tb=document.getElementById("bg1");
+			toolbar=false;
+			tb.style.display="none";
+		}
+		function toggleToolbar(){
+			var tb=document.getElementById("bg1");
 			
+			
+			if(toolbar){
+				toolbar=false;
+				tb.style.display="none";
+				
+			}else{
+				toolbar=true;
+				tb.style.display="block";
+				
+			}
+			
+			
+		}
+		function editAction(e) {
+			var tb=document.getElementById("bg1");
+			toolbarOff();
 			//quick an dirty without command and commandstack
 			
-			if(e)console.log("show: "+e);
+			//if(e)console.log("show: "+e);
 			if(parseInt(e)==INSERT){
 				if(e)console.log("insert: "+e);	
-				makeShip("a bubble",(c.width/2),(c.height/2),10,10,"green");	
+					
+				/* unselect(selectedShape);
+				if(textarea){
+					te
+				} */
+				//var event = new MouseEvent('mousedown');//, { 'offsetX':(c.width/2),'offsetY': (c.height/2) });	
+				//event.offsetX=170;
+				
+				
+				
+				//c.dispatchEvent(event);
+				
+				
+				
+				var x=(c.width/2)-Math.floor((Math.random() * 100) + 1); 
+				var y=(c.height/2)-Math.floor((Math.random() * 100) + 1);
+				
+				var shape=makeShip("",x,y,10,10,"green");
+				selectShape(x+5, y+5);
+				
+				
+				
+				
+				//selectedShape=shape;
 				drawAllShips();
+				//test should be outside in a function
+				if (!textarea) {
+					textarea = document.createElement('textarea');
+					textarea.id = 'bubbletextarea';
+					document.body.appendChild(textarea);
+					textarea.oninput = textChangeListener;
+				}
+				
+	          var rect = c.getBoundingClientRect();
+				textarea.value = selectedShape.name;
+				//textarea.style.top = (evt.clientY+rect.top )+ 'px';
+				textarea.style.top = (selectedShape.y+rect.top+window.pageYOffset) + 'px';
+				
+				
+				textarea.style.left = (selectedShape.x+rect.left+window.pageXOffset) + 'px';
+				//width and height
+				var dim=textDim(selectedShape.name);
+				textarea.style.width=(dim.w)+"px";
+				textarea.style.height=(dim.h+6)+"px";
+				
+				textarea.style.position = "absolute"; 
+				textarea.focus();
+				
+				
+				
+				
+				
+				
+				
+				
+				
 				
 			}else if(parseInt(e)==DELETE){
 				
@@ -242,6 +313,11 @@ var touchMove=false;
 						drawBubbleText(s); */
 						bubbles.splice(i,1);
 						selectedShape=null;
+						if(textarea){
+							textarea.remove();
+							textarea=null;
+							
+						}
 						drawAllShips();
 						break;
 						}
@@ -322,7 +398,12 @@ var touchMove=false;
 		}
 
 		function mouseDownListener(evt) {
-			console.log("mouse down");
+			evt.preventDefault();
+			console.log("mouse down:"+evt.offsetX);
+			
+			
+			toolbarOff();
+			
 			
 			if (textarea) {
 				textarea.remove();
@@ -385,11 +466,22 @@ var touchMove=false;
 							textarea.oninput = textChangeListener;
 						}
 						
-						
+			          var rect = c.getBoundingClientRect();
 						textarea.value = selectedShape.name;
-						textarea.style.top = evt.clientY + 'px';
-						textarea.style.left = evt.clientX + 'px';
+						//textarea.style.top = (evt.clientY+rect.top )+ 'px';
+						textarea.style.top = (selectedShape.y+rect.top+window.pageYOffset) + 'px';
+						
+						
+						textarea.style.left = (selectedShape.x+rect.left+window.pageXOffset) + 'px';
+						//width and height
+						var dim=textDim(selectedShape.name);
+						textarea.style.width=(dim.w)+"px";
+						textarea.style.height=(dim.h+6)+"px";
+						
 						textarea.style.position = "absolute"; 
+						textarea.focus();
+						
+						
 		         
 		          
 			}
@@ -397,6 +489,28 @@ var touchMove=false;
 			
 			
 
+		}
+		
+		
+		
+		
+		function textDim(text){
+			var dim={lines:[],w:40,h:18};
+			if(text){
+			var res =text.split("\n");
+			dim.lines=res;
+			var tl = dim.w;
+			
+			var th = res.length * fontH;
+			ctx.font = bubbleFont;
+			for (i = 0; i < res.length; i++) {
+				tl = Math.max(tl, ctx.measureText(res[i]).width);
+			}
+			dim.w=Math.max(dim.w,tl);
+			dim.h=th;
+			}
+			
+			return dim;
 		}
 		function mouseUpListener(evt) {
 			console.log("mouse up");
@@ -484,7 +598,8 @@ var touchMove=false;
 
 		}
 		function updateImageLocal(canvas) {
-	        var image_data = canvas.toDataURL("image/jpeg",0.2);  
+	        //var image_data = canvas.toDataURL("image/png");  
+	        var image_data = canvas.toDataURL("image/jpeg",0.8);  
 
 		var downloadArea=document.getElementById('download-area');
 		downloadArea.style.display="block";
@@ -512,10 +627,9 @@ var touchMove=false;
 		var bubbles = [];
 
 		// make some ship
-		makeShip("Hallo, wie geht es Ihnen?", 20, 30, 50, 25, "#FAF0E6");
-		makeShip("Ausgezeichnet!\nDanke.", 40, 100, 30, 25, "#FAF0E6");
-		//makeShip("Wer bistn du?", 20, 170, 50, 25, "white");
-		//makeShip("Nenn mich Vater.", 120, 40, 30, 25, "skyblue");
+		makeShip("Hallo, wie geht es Ihnen?", 20, 40, 50, 25, "#FAF0E6");
+		//makeShip("Ausgezeichnet!\nDanke.", 40, 100, 30, 25, "#FAF0E6");
+	
 		drawAllShips();
 		function textChangeListener(evt) {
 			var id = evt.target.id;
@@ -528,13 +642,28 @@ var touchMove=false;
 			}
 			selectedShape.name = text;
 			drawAllShips();
+			if(textarea){
+				/* var res = textarea.value.split("\n");
+				var tl = 0;
+				var th = res.length * fontH;
+				ctx.font = bubbleFont;
+				for (i = 0; i < res.length; i++) {
+					tl = Math.max(tl, ctx.measureText(res[i]).width);
+				} */
+				var dim=textDim(textarea.value);
+				
+// 				console.log("width textarea: "+tl);
+				textarea.style.width=(dim.w+6)+"px";
+				textarea.style.height=(dim.h+6)+"px";
 
+			}
+			
 		}
 
 		
 
 		function selectShape(x, y) {
-			//console.log("select?");
+			//console.log("select? "+x+" "+y);
 		
 			for (var i = (bubbles.length-1);i>=0; i--) {
 				var s = bubbles[i];
@@ -550,7 +679,7 @@ var touchMove=false;
 				//AADDD unselect former selected
 				if(selectedShape){
 					if(!(selectedShape.id==s.id)){
-						console.log("former: "+selectedShape.name +" selected " + s.name);
+						//console.log("former: "+selectedShape.name +" selected " + s.name);
 						selectedShape.stroke="green";
 						drawBubbleText(selectedShape);
 					}
@@ -560,18 +689,18 @@ var touchMove=false;
 				s.stroke="magenta";
 				drawBubbleText(s);
 					selectedShape = s;
-					var event = new CustomEvent("name-of-event", { "detail": {message:"Found",shape:s }});
+					/* var event = new CustomEvent("name-of-event", { "detail": {message:"Found",shape:s }});
 		          // Dispatch/Trigger/Fire the event
-			          c.dispatchEvent(event);
+			          c.dispatchEvent(event); */
 					
 					
 					return true;
 				}
 
 			}
-			var event = new CustomEvent("name-of-event", { "detail": {message:"Shape not found" }});
+		/* 	var event = new CustomEvent("name-of-event", { "detail": {message:"Shape not found" }});
 	          // Dispatch/Trigger/Fire the event
-		          c.dispatchEvent(event);
+		          c.dispatchEvent(event); */
 			
 			return false;
 
@@ -652,25 +781,28 @@ var touchMove=false;
 	    	});
 		function drawBubbleText(shape) {
 			var text = shape.name;
-			var res = text.split("\n");
+			/* var res = text.split("\n");
 			var tl = 0;
 			var th = res.length * fontH;
 			ctx.font = bubbleFont;
 			for (i = 0; i < res.length; i++) {
 				tl = Math.max(tl, ctx.measureText(res[i]).width);
-			}
+			} */
+			
+			var dim=textDim(text);
 			//padding
-			shape.w = tl + 10;
-			shape.h = th + 5;
+			shape.w = dim.w + 10;
+			shape.h = dim.h + 5;
 			//shape.h = th + 5;
 			drawShip(shape);
 
 			ctx.fillStyle = "black";
 
-			for (i = 0; i < res.length; i++) {
+			for (i = 0; i < dim.lines.length; i++) {
 
-				ctx.fillText(res[i], shape.x + 5, (shape.y + (i + 1) * fontH));
+				ctx.fillText(dim.lines[i], shape.x + 5, (shape.y + (i + 1) * fontH));
 			}
+			
 
 		}
 		function drawABubble(x,y,w,h,radius,px,py){
