@@ -1,11 +1,38 @@
 @CHARSET "UTF-8";
 
 body{
-	font-family:Arial,Verdana,sans-serif;
+	font-family:Arial,Verdana,sans-serif;	
+}
+.content{
+	
+	/* height:100%;
+	background-color: blue; */
+	padding-top:10px;
+	padding-left:1px;
+	
 	
 }
+.floating-box {
+    display: inline-block;
+    width: 42%;
+    margin: 7px 10px 0 0;
+    border: 1px solid #73AD21;
+padding: 5px; 
+vertical-align: middle; 
+}
 
-ul {
+.after-box {
+	margin: 7px 10px 0 0;
+    border: 1px solid #73AD21;
+    padding:5px;
+}
+
+
+
+
+
+/* navigation  */
+.ul-nav {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -13,11 +40,11 @@ ul {
     background-color: MidnightBlue ;
 }
 
-li {
+.li-nav {
     float: left;
 }
 
-li a {
+.li-nav a {
     display: block;
     color: white;
     text-align: center;
@@ -25,7 +52,7 @@ li a {
     text-decoration: none;
 }
 
-li a:hover:not(.active) {
+.li-nav a:hover:not(.active) {
     background-color: #111;
 }
 

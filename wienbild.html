@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Projekt Wienbild</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style type="text/css">
+#wapiblock-tos, #wapiblock, #slides-status, #show-description {
+	float: left;
+	clear: both;
+}
+
+.X {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+	background-color: green;
+	cursor: pointer;
+}
+
+.keyword {
+	font-weight: bold;
+	color: MediumBlue;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="css/home.css">
+<script type="text/javascript"
+	src="http://www.panoramio.com/wapi/wapi.js?v=1&amp;hl=de"></script> 
+</head>
+<body onload="show()">
+<!-- navigation -->
+<ul class="ul-nav">
+  <li class="li-nav"><a href="index.html">Home</a></li>
+  <li class="li-nav"><a href="projects.html">Projekte</a></li>
+  <li class="li-nav" style="float:right"><a href="about.html">Impressum</a></li>
+</ul>
+
+
+	<div style="overflow: auto; float: left; border: 1px solid green;">
+		<p style="text-align: center; margin: 0; font-weight: bolder;">Projekt Wienbild</p>
+		<div id="wapiblock"></div>
+		<div id="slides-status">
+			<span id="status"></span>
+		</div>
+		<div id="wapiblock-tos"></div>
+		<div id="show-description">
+			<br> <span style="font-weight: bold; font-size: small;margin:5px;"
+				onclick="showDesc()">Projekt Beschreibung</span>
+				<br>&nbsp;
+				
+		</div>
+	</div>
+	<div id="description"
+		style="display: none; float: left; border: 1px solid green; width: 350px; font-size: small;padding: 5px;">
+		<span class="keyword">Name: Wienbild</span> <span class="X"
+			onclick="hideDesc()">X</span><br><br> Die Bilder von Fotografen
+		zeigen meist interessante, schöne, vielleicht auch besonders
+		schreckliche Ansichten einer Stadt. <br> Beispiel Wien: Bilder
+		verschiedener Fotografen, die ihre Bilder auf der Fotoplattform
+		Panoramio mit
+		<code>tag=wien</code>
+		versehen haben. <br> <a target="_blank"
+			href="http://www.panoramio.com/wapi/template/list.html?tag=wien&width=480&height=340&rows=2&columns=2&orientation=horizontal">
+			<code>tag=wien</code>
+		</a> &nbsp;(neues Fenster) <br><br>
+		<span class="keyword">Ziele: </span>
+		<ul style="list-style-type: none; margin: 5px; padding: 0;">
+			<li>Wien wird gezeigt wo es uninteressant, langweilig, unaufgeregt ist.</li>
+			<li>Ich bin vertraut mit der API von Panoramio.</li>
+			
+		</ul>
+		<span class="keyword">Start: </span>September 2016
+		
+
+
+
+
+
+
+
+	</div>
+	<script type="text/javascript">
+		function showDesc() {
+			var desc = document.getElementById("description");
+			document.getElementById('description').style.display = "block";
+
+		}
+		function hideDesc() {
+			var desc = document.getElementById("description");
+			document.getElementById('description').style.display = "none";
+
+		}
+
+		var mycurrentpos = 0;
+		
+		function foo(){
+			var desc = document.getElementById("description");
+			document.getElementById('description').style.display = "block";
+			
+		}
+
+		function show() {
+			var widget;
+			var optionsTos = {
+				'width' : 350
+			};
+			//var status = document.getElementById('status'); 
+			var tosWidget = new panoramio.TermsOfServiceWidget('wapiblock-tos',
+					optionsTos);
+			var tosHeight = tosWidget.getHeight();
+
+			var myRequest = {
+				'user' : '9225306',
+				'tag' : 'grauslig',
+				'order' : panoramio.PhotoOrder.DATE_DESC
+			};
+
+			var myOptions = {
+
+				'width' : 360,
+				'height' : 330,
+				'rows' : 2,
+				'columns' : 2,
+				'croppedPhotos' : true,
+				'disableDefaultEvents' : [ panoramio.events.EventType.PHOTO_CLICKED ],
+				'attributionStyle' : panoramio.tos.Style.HIDDEN,
+
+			};
+			var wapiblock = document.getElementById('wapiblock');
+			widget = new panoramio.PhotoListWidget(wapiblock, myRequest,
+					myOptions);
+
+			widget.setPosition(mycurrentpos);
+
+		}
+	</script>
+
+</body>
+</html>
