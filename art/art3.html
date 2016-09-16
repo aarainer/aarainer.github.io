@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>art-3</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0">
+
+<style>
+#stage {
+	width: 480px;
+	height: 320px;
+	position: relative;
+	border: 2px solid black;
+	background: Beige;
+}
+
+canvas {
+	position: absolute;
+}
+
+#ui-layer {
+	z-index: 3
+}
+
+#game-layer {
+	z-index: 2
+}
+
+#background-layer {
+	z-index: 1
+}
+
+
+
+
+</style>
+
+</head>
+<body>
+	<div id="stage">
+		<canvas id="ui-layer" width="480" height="320"></canvas>
+		<canvas id="game-layer" width="480" height="320"></canvas>
+		<canvas id="background-layer" width="480" height="320"></canvas>
+		
+
+	</div>
+	<div>
+  
+  <span><em>Spiel mit Ellipsen</em> </span>
+</div>
+	
+
+	<script>
+		console.log("init");
+		var c1=document.getElementById("background-layer");
+		var ctx1 = c1.getContext("2d");
+		var c2 = document.getElementById("game-layer");
+		var ctx2=c2.getContext("2d");
+		var ctx3 = document.getElementById("ui-layer").getContext("2d");
+		// background black
+		ctx1.fillStyle = "#000000";
+		ctx1.fillRect(0, 0, c1.width, c1.height);
+		
+		
+
+var dx=0;
+var speed=.3;
+var start = null;
+var currSec=0;
+var a=85;
+var b=35;
+var da=((Math.random()/2)+.1);
+var db=((Math.random()/2)+.1);
+
+// draw();
+// function draw(){
+// 	ctx2.strokeStyle = "#ffaaaa";
+// 	for (i=0;i<360;i+=5){
+	
+// 	ctx2.beginPath();
+// 	ctx2.ellipse(100, 100, 85, 15, i * Math.PI/180, 0, 2 * Math.PI);
+// 	ctx2.stroke();
+// 	}
+// }
+ 
+function animate(timestamp) {
+	if (!start) start = timestamp;
+	ctx2.strokeStyle = "#aaaaaa";
+	dx += speed;
+	a+=da;
+	 if (a <= 50 || a >= 140) {
+			da = -da;
+			if(da>0)
+			da=((Math.random()/2.0)+.1);
+			
+	}
+	 
+	 b+=db;
+	 if (b <= 25 || b >= 50) {
+			db = -db;
+			if(db>0)
+				db=((Math.random()/2.0)+.1);
+			
+	}
+	 
+	 var progress = timestamp - start;
+	//if (progress < 7200) {
+	 if (true) {
+		 if(Math.floor(progress/50)!=currSec){
+			 currSec=Math.floor(progress/50);
+			if(currSec%20==0){
+				//console.log(currSec/20+" a:"+Math.floor(a) +" da: "+da);
+				
+			}
+			
+				
+			 	ctx2.beginPath();
+				ctx2.ellipse(c2.width/2, c2.height/2, a, b, dx * Math.PI/180, 0, 2 * Math.PI);
+				ctx2.stroke(); 
+			
+			
+			refresh();
+		 }
+		 
+		    window.requestAnimationFrame(animate);
+		  }
+	
+
+
+
+} 
+window.requestAnimationFrame(animate);
+
+		function refresh(){
+	
+	  fade();
+	
+}
+		
+		function fade(){
+			 var imageData = ctx2.getImageData(0,0,c2.width, c2.height);
+			  var data = imageData.data;
+			 
+		    for (var i = 0; i < data.length; i += 4) {
+		    	
+
+		      data[i+3]=Math.floor(data[i+3]*0.99); 
+		      
+		      
+		    }
+		    ctx2.putImageData(imageData, 0, 0);
+		};
+		
+		
+	</script>
+
+
+</body>
+</html>

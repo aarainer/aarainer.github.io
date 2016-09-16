@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>art-4</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+#stage {
+	width: 480px;
+	height: 320px;
+	position: relative;
+	border: 2px solid black;
+	background: Beige;
+}
+
+canvas {
+	position: absolute;
+}
+
+#ui-layer {
+	z-index: 3
+}
+
+#game-layer {
+	z-index: 2
+}
+
+#background-layer {
+	z-index: 1
+}
+</style>
+
+</head>
+<body>
+	<div id="stage">
+		<canvas id="ui-layer" width="480" height="320"></canvas>
+		<canvas id="game-layer" width="480" height="320"></canvas>
+		<canvas id="background-layer" width="480" height="320"></canvas>
+
+
+	</div>
+	<div>
+
+		<span><em>Flimmerkiste</em> </span>
+	</div>
+
+
+	<script>
+		console.log("init");
+		var c1 = document.getElementById("background-layer");
+		var ctx1 = c1.getContext("2d");
+		var c2 = document.getElementById("game-layer");
+		var ctx2 = c2.getContext("2d");
+		var ctx3 = document.getElementById("ui-layer").getContext("2d");
+// 		// background black
+// 		ctx1.fillStyle = "#000000";
+// 		ctx1.fillRect(0, 0, c1.width, c1.height);
+// 		ctx2.fillStyle = "rgba(255,255,255,0.2)";//ffffff";
+// 		ctx2.fillRect(0, 0, c2.width, c2.height);
+		var start = null;
+		var currSec = 0;
+		var imageObj = new Image();
+
+		imageObj.onload = function() {
+			ctx1.drawImage(imageObj, 0, 0,480,320);
+			
+		};
+		imageObj.src = 'Early_portable_tv.jpg';
+		
+		
+
+		function animate(timestamp) {
+			if (!start)
+				start = timestamp;
+
+			var progress = timestamp - start;
+			//if (progress < 7200) {
+				if (true) {	
+				var t=Math.floor(progress / 70);
+				if (t != currSec) {
+					currSec = t;
+					
+					flicker();
+					
+
+				}
+
+				window.requestAnimationFrame(animate);
+			}
+
+			
+
+		}
+		window.requestAnimationFrame(animate);
+
+		
+		var imageData = ctx2.createImageData(150, 100);
+		var data = imageData.data;
+		function flicker() {
+			
+			
+
+			for (var i = 0; i < data.length; i += 4) {
+				
+				var r = Math.random() < 0.5 ? 50 : 200;
+				data[i ] = r;
+				data[i + 1] = r;
+				data[i + 2] = r;
+				data[i + 3] = 255;
+			}
+			ctx2.putImageData(imageData, 135, 148);
+		};
+
+		
+	</script>
+
+
+</body>
+</html>

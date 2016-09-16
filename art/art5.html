@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>art-5</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+#stage {
+	width: 480px;
+	height: 320px;
+	position: relative;
+	border: 2px solid black;
+	background: Beige;
+}
+
+canvas {
+	position: absolute;
+}
+
+#ui-layer {
+	z-index: 3
+}
+
+#game-layer {
+	z-index: 2
+}
+
+#background-layer {
+	z-index: 1
+}
+</style>
+
+</head>
+<body >
+	<div id="stage">
+		<canvas id="ui-layer" width="480" height="320"></canvas>
+		<canvas id="game-layer" width="480" height="320"></canvas>
+		<canvas id="background-layer" width="480" height="320"></canvas>
+
+
+	</div>
+	<div>
+
+		<span><em>Lissajous-Figur</em> </span>
+	</div>
+
+
+	<script>
+	
+		
+		var c1 = document.getElementById("background-layer");
+		var ctx1 = c1.getContext("2d");
+		var c2 = document.getElementById("game-layer");
+		var ctx2 = c2.getContext("2d");
+		var ctx3 = document.getElementById("ui-layer").getContext("2d");
+ 		// background black
+ 		ctx1.fillStyle = "#000000";
+ 		ctx1.fillRect(0, 0, c1.width, c1.height);
+//  		ctx2.fillStyle = "rgba(55,55,55,0.2)";//ffffff";
+//  		ctx2.fillRect(0, 0, c2.width, c2.height);
+		
+// 		var imageObj = new Image();
+// 		 imageObj.onload = function() {
+// 			ctx1.drawImage(imageObj, 0, 0,480,320);
+			
+// 		};
+// 		imageObj.src = 'Early_portable_tv.jpg'; 
+		
+		
+		
+		
+		
+		var start = null;
+		var currSec = 0;
+		var speed=50;
+		var amp=80;
+		var phase=60;
+		function animate(timestamp) {
+			if (!start)
+				start = timestamp;
+
+			var progress = timestamp - start;
+			//if (progress < 7200) {
+				if (true) {	
+				var t=Math.floor(progress / 50);
+				if (t != currSec) {
+					currSec = t;
+					if(currSec%20==0){
+						//seconds
+						//console.log(currSec/20);
+						
+						
+					}
+					
+					ctx2.clearRect(c2.width/2-amp,c2.height/2-phase,amp*2,phase*2);
+					
+			
+					
+					
+					liss(currSec/speed);
+
+				}
+
+				window.requestAnimationFrame(animate);
+			}
+
+			
+
+		}
+		window.requestAnimationFrame(animate);
+		
+		
+		
+		
+		
+		
+		
+		
+		function liss(phv){
+			var pi=Math.PI;
+			for(t=0;t<2*pi;t+=.01){
+			
+				
+				
+				x=Math.sin(3*t)*amp+c2.width/2;
+				 y=Math.sin(4*t+phv*pi/10)*phase+c2.height/2;
+				 
+ 				/*  x=Math.sin(3*t)*Math.sin(4*t) *amp+c2.width/2;
+ 				 y=Math.sin(4*t+pi/phv)*phase+c2.height/2;
+				  */
+				 
+				 
+				plot (x,y);
+				
+				
+			}
+			
+			
+		}
+	
+		
+
+	
+
+		
+		var imageData = ctx2.createImageData(1, 1);
+		var data = imageData.data;
+		
+		function plot(x,y) {
+		
+			 	data[0 ] = 255;
+				data[1] = 255;
+				data[ 2] = 255;
+				data[3] = 255;
+			
+			ctx2.putImageData(imageData,x,y); 
+		}
+		
+	</script>
+
+
+</body>
+</html>
