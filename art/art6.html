@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>art-6</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+#stage {
+	width: 480px;
+	height: 320px;
+	position: relative;
+	/* 	border: 2px solid black; */
+	background: Beige;
+}
+
+canvas {
+	position: absolute;
+}
+
+#ui-layer {
+	z-index: 3
+}
+
+#game-layer {
+	z-index: 2
+}
+
+#background-layer {
+	z-index: 1
+}
+</style>
+
+</head>
+<body onload="draw()">
+	<div id="stage">
+		<canvas id="ui-layer" width="480" height="320"></canvas>
+		<canvas id="game-layer" width="480" height="320"></canvas>
+		<canvas id="background-layer" width="480" height="320"></canvas>
+
+
+	</div>
+	<div>
+
+		<span><em>Die alternative Stadt (aus: W. Narbutt-Lieven,
+				Mit Basic-Programmen zu Meisterbildern, Wien 1985)</em> </span>
+	</div>
+
+
+	<script>
+		var c1 = document.getElementById("background-layer");
+		var ctx1 = c1.getContext("2d");
+		var c2 = document.getElementById("game-layer");
+		var ctx2 = c2.getContext("2d");
+		var ctx3 = document.getElementById("ui-layer").getContext("2d");
+
+		ctx1.fillStyle = "Khaki";
+		ctx1.fillRect(0, 0, c1.width, c1.height);
+		var colors = [ "red", "lime", "purple", "navy", "aqua", "gray", "blue",
+				"magenta", "beige", "darkred", "black", "yellow", "orange",
+				"DarkKhaki", "green", "teal", "black", "black", "black" ];
+
+		var fps = .2;
+		function draw() {
+			ctx2.clearRect(0, 0, c2.width, c2.height);
+			drawCity();
+
+			setTimeout(function() {
+				requestAnimationFrame(draw);
+
+			}, 1000 / fps);
+		}
+
+		function drawCity() {
+
+			for (i = 0; i < 500; i++) {
+
+				var x = Math.floor(Math.random() * 270 + 100);
+				var y = Math.floor(Math.random() * 200 + 100);
+				var r = Math.floor(Math.random() * 60 + 8);
+
+				if (x < 128)
+					r = r * .6;
+
+				var n = Math.floor(Math.random() * 4 + 1);
+				//no trees under the basement
+				if (y + r < 270)
+					circle(x, y, r, nextCol(), null, null, n);
+
+				boxfill(Math.max(15, x - 120), Math.min(y + 50, 300), x, y,
+						nextCol());
+				box(15, 300, x, y, nextCol());
+
+			}
+
+		}
+
+		function circle(x, y, radius, color, start, end, asp, ccw) {
+
+			var b = asp ? radius / asp : radius;
+
+			var sa = start || 0;
+			var ea = end || 2 * Math.PI;
+			var rot = ccw || true;
+			ctx2.fillStyle = color;
+			ctx2.beginPath();
+			ctx2.ellipse(x, y, radius, b, 90 * Math.PI / 180, sa, ea, rot);
+			ctx2.fill();
+
+		}
+
+		function box(fx, fy, tx, ty, c) {
+
+			ctx2.lineWidth = 1;
+			ctx2.strokeStyle = c;
+			ctx2.strokeRect(fx, ty, tx - fx, fy - ty);
+
+		}
+		function boxfill(fx, fy, tx, ty, c) {
+			ctx2.fillStyle = c;
+			ctx2.fillRect(fx, ty, tx - fx, fy - ty);
+
+		}
+
+		function nextCol() {
+			var u = Math.floor(Math.random() * colors.length);
+			return colors[u];
+
+		}
+	</script>
+
+
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>art-8</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+#stage {
+	width: 324px;
+	height: 400px;
+	position: relative;
+	/* 	border: 2px solid black; */
+	background: Beige;
+}
+
+canvas {
+	position: absolute;
+}
+
+#ui-layer {
+	z-index: 3
+}
+
+#game-layer {
+	z-index: 2
+}
+
+#background-layer {
+	z-index: 1
+}
+</style>
+
+</head>
+<body onload="animate();">
+	<div id="stage">
+		<canvas id="ui-layer" width="324" height="400"></canvas>
+		<canvas id="game-layer" width="324" height="400"></canvas>
+		<canvas id="background-layer" width="324" height="400"></canvas>
+
+
+	</div>
+	<div>
+
+		<span><em>Tiefe See.</em> </span>
+		<p>
+		 Frühe Computerkünstler (wie z.B. Herbert W. Franke)
+		 nutzen auch das Oszilloskop als Anzeigegerät. Der Bildschirm wurde dann ganz konventionell fotografiert. Die geisterhafte Ruhe dieser Arbeiten sind mit dem pixelbasierten Bildschirm schwer 
+		nachvollziehbar.
+		</p>
+	</div>
+
+
+	<script>
+		var c1 = document.getElementById("background-layer");
+		var ctx1 = c1.getContext("2d");
+		var c2 = document.getElementById("game-layer");
+		var ctx2 = c2.getContext("2d");
+		var ctx3 = document.getElementById("ui-layer").getContext("2d");
+		ctx2.strokeStyle = "rgba(255, 255, 255,.2)";
+		ctx2.fillStyle = "rgba(198, 198, 198,.2)";
+		ctx1.fillStyle = "black";
+		ctx1.fillRect(0, 0, c1.width, c1.height);
+		
+
+		var fps = 4;
+		var fps2 = 4;
+		function animate() {
+			ctx2.clearRect(0, 0, c2.width, c2.height);
+
+			draw();
+		
+			setTimeout(function() {
+				requestAnimationFrame(animate);
+
+			}, 1000 / fps);
+		}
+		function fadeout() {
+			//ctx2.clearRect(0, 0, c2.width, c2.height);
+
+			fade();
+			console.log("fade");
+			setTimeout(function() {
+				requestAnimationFrame(fadeout);
+
+			}, 1000 / fps2);
+		}
+
+		var speed1 = 1;
+		var curr1 = 0;
+		var rotation1 = Math.floor(Math.random() * 40) - 20;
+		if(Math.abs(rotation1<10)){rotation1=10;}
+		var speed2 = 1;
+		var curr2 = 0;
+		var rotation2 = Math.floor(Math.random() * 40) - 20;
+		var speed3 = 1;
+		var curr3 = 0;
+		var rotation3 = Math.floor(Math.random() * 40) - 20;
+		function draw() {
+			
+			
+			if (curr1 >= rotation1||(curr1 <= (-1 * rotation1))) {
+				speed1 = -speed1;		
+			}			
+			curr1 += speed1;
+			if(Math.abs(curr1)<1&&speed1>0){
+				//new rotation
+				rotation1 = Math.floor(Math.random() * 20) + 10;
+			}
+			
+			//second
+			if (curr2 >= rotation2||(curr2 <= (-1 * rotation2))) {
+				speed2 = -speed2;		
+			}			
+			curr2 += speed2;
+			if(Math.abs(curr2)<1&&speed2>0){
+				//new rotation
+				rotation2 = Math.floor(Math.random() * 20) + 10;
+			}
+			
+			//third
+			if (curr3 >= rotation3||(curr3 <= (-1 * rotation3))) {
+				speed3 = -speed3;		
+			}			
+			curr3 += speed3;
+			if(Math.abs(curr3)<1&&speed3>0){
+				//new rotation
+				rotation3 = Math.floor(Math.random() * 20) + 10;
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			drawS(110, 350, 160, 15,50,curr1, true);
+			drawS(110, 350, 160, 15,50,curr1, false);
+
+						drawS(180,330,80,12,45,  curr2,true);
+						drawS(180,330,80,12,45,curr2,false);
+
+			 			drawS(210,370,250,18,60,curr3,true);
+			 			drawS(210,370,250,18,60,curr3,false);
+
+		}
+
+		function drawS(x, y, endY, beginA,endA,rotation, style) {
+
+			var startY = y || 380;
+			var endY = endY || 180;
+			var beginA = beginA||10;
+			var endA = endA||50;
+			var beginB = 2;
+			var endB = 40;
+			var x = x || 150;
+			var rotation = rotation || 0;
+
+			for (i = startY; i >= endY;) {
+
+				var p = progess(i, startY, endY);
+				var a = beginA + circ(p) * endA;
+
+				//a=circ(p)*70;
+				var b = beginB + circ(p) * endB * a / (beginA + endA);
+
+				//a = beginX + bounce(p) * endX;
+				//a = beginX + back(p, 1.5) * endX;
+				//a = beginX + elastic(p, 1.5) * endX;
+
+				ctx2.beginPath();
+				ctx2.ellipse(x + rotation * circ(p), i, a, b, rotation * p
+						* Math.PI / 180, 0, 2 * Math.PI, true);
+				if (style)
+					ctx2.fill();
+				ctx2.lineWidth = 2;
+				ctx2.stroke();
+				ctx2.closePath();
+				i -= Math.min(5, .1 / (0.1 * (quad(p, 7) + .1)));
+			}
+
+		}
+		function elastic(progress, x) {
+			return Math.pow(2, 10 * (progress - 1))
+					* Math.cos(20 * Math.PI * x / 3 * progress)
+		}
+
+		function bounce(progress) {
+
+			for (var a = 0, b = 1, result; 1; a += b, b /= 2) {
+
+				if (progress >= (7 - 4 * a) / 11) {
+
+					return -Math.pow((11 - 6 * a - 11 * progress) / 4, 2)
+							+ Math.pow(b, 2)
+
+				}
+
+			}
+
+		}
+
+		function back(progress, x) {
+			return Math.pow(progress, 2) * ((x + 1) * progress - x)
+		}
+
+		function linear(progress) {
+			return progress;
+		}
+		function quad(progress, n) {
+			n = n || 2;
+			return Math.pow(progress, n)
+		}
+		function circ(progress) {
+			return 1 - Math.sin(Math.acos(progress))
+		}
+
+		function progess(n, start, end) {
+			return (n - start) / (end - start);
+
+		}
+
+		function elli(c) {
+			ctx2.strokeStyle = c;
+			ctx2.beginPath();
+			ctx2.ellipse(160, 100, 145, 25, 0, 0, 2 * Math.PI);
+			ctx2.stroke();
+
+		}
+		function circle(x, y, radius, color, start, end, asp, ccw) {
+
+			var b = asp ? radius / asp : radius;
+
+			var sa = start || 0;
+			var ea = end || 2 * Math.PI;
+			var rot = ccw || true;
+			ctx2.fillStyle = color;
+			ctx2.beginPath();
+			ctx2.ellipse(x, y, radius, b, 90 * Math.PI / 180, sa, ea, rot);
+			ctx2.fill();
+			ctx2.closePath();
+
+		}
+		function line(fx, fy, tx, ty, c, width) {
+			var w = width || 1;
+			ctx2.lineWidth = w;
+			ctx2.strokeStyle = c;
+			ctx2.beginPath();
+			ctx2.moveTo(fx, fy);
+			ctx2.lineTo(tx, ty);
+			ctx2.stroke();
+			ctx2.closePath();
+
+		}
+
+		function box(fx, fy, tx, ty, c) {
+
+			ctx2.lineWidth = 1;
+			ctx2.strokeStyle = c;
+			ctx2.strokeRect(fx, ty, tx - fx, fy - ty);
+
+		}
+		function boxfill(fx, fy, tx, ty, c) {
+			ctx2.fillStyle = c;
+			ctx2.fillRect(fx, ty, tx - fx, fy - ty);
+
+		}
+
+		function nextCol() {
+			var u = Math.floor(Math.random() * colors.length);
+			return colors[u];
+
+		}
+		function fade() {
+			var imageData = ctx2.getImageData(0, 0, c2.width, c2.height);
+			var data = imageData.data;
+
+			for (var i = 0; i < data.length; i += 4) {
+
+				data[i + 3] = Math.floor(data[i + 3] * 0.8);
+
+			}
+			ctx2.putImageData(imageData, 0, 0);
+		};
+	</script>
+
+
+</body>
+</html>

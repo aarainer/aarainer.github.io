@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>art-7</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+#stage {
+	width: 480px;
+	height: 320px;
+	position: relative;
+	/* 	border: 2px solid black; */
+	background: Beige;
+}
+
+canvas {
+	position: absolute;
+}
+
+#ui-layer {
+	z-index: 3
+}
+
+#game-layer {
+	z-index: 2
+}
+
+#background-layer {
+	z-index: 1
+}
+</style>
+
+</head>
+<body onload="animate()">
+	<div id="stage">
+		<canvas id="ui-layer" width="480" height="320"></canvas>
+		<canvas id="game-layer" width="480" height="320"></canvas>
+		<canvas id="background-layer" width="480" height="320"></canvas>
+
+
+	</div>
+	<div>
+
+		<span><em>Zacken (aus: W. Narbutt-Lieven,
+				Mit Basic-Programmen zu Meisterbildern, Wien 1985)</em> </span>
+	</div>
+
+
+	<script>
+		var c1 = document.getElementById("background-layer");
+		var ctx1 = c1.getContext("2d");
+		var c2 = document.getElementById("game-layer");
+		var ctx2 = c2.getContext("2d");
+		var ctx3 = document.getElementById("ui-layer").getContext("2d");
+
+		ctx1.fillStyle = "Khaki";
+		ctx1.fillRect(0, 0, c1.width, c1.height);
+		var colors = [ "red", "lime", "purple", "navy", "aqua", "green", "blue",
+				"magenta", "beige", "red", "black", "navy", "orange", "green"];
+
+		var fps = .2;
+		function animate() {
+			ctx2.clearRect(0, 0, c2.width, c2.height);
+			
+			draw();
+			setTimeout(function() {
+				requestAnimationFrame(animate);
+				
+			}, 1000 / fps);
+		}
+
+		function draw() {
+var pad=40;
+			for (i = 0; i < 5; i++) {
+				var x = Math.floor(Math.random() * 400 + pad);
+				var y = Math.floor(Math.random() * 96 + pad);
+				var s = Math.floor(Math.random() * 10 + 3);
+				var c=nextCol();
+				
+				for (y1 = pad; y1 < 250; y1 += s) {
+					line(pad, y1, x, y, c,2);
+
+				if(x<(160+pad)){
+					box(pad,y1,x,y,nextCol());
+				}
+				}
+			
+
+			}
+		}
+		function circle(x, y, radius, color, start, end, asp, ccw) {
+
+			var b = asp ? radius / asp : radius;
+
+			var sa = start || 0;
+			var ea = end || 2 * Math.PI;
+			var rot = ccw || true;
+			ctx2.fillStyle = color;
+			ctx2.beginPath();
+			ctx2.ellipse(x, y, radius, b, 90 * Math.PI / 180, sa, ea, rot);
+			ctx2.fill();
+
+		}
+		function line(fx, fy, tx, ty, c,width) {
+var  w=width||1;
+			ctx2.lineWidth = w;
+			ctx2.strokeStyle = c;
+			ctx2.beginPath();
+			ctx2.moveTo(fx, fy);
+			ctx2.lineTo(tx, ty);
+			ctx2.stroke();
+			ctx2.closePath();
+
+		}
+
+		function box(fx, fy, tx, ty, c) {
+
+			ctx2.lineWidth = 1;
+			ctx2.strokeStyle = c;
+			ctx2.strokeRect(fx, ty, tx - fx, fy - ty);
+
+		}
+		function boxfill(fx, fy, tx, ty, c) {
+			ctx2.fillStyle = c;
+			ctx2.fillRect(fx, ty, tx - fx, fy - ty);
+
+		}
+
+		function nextCol() {
+			var u = Math.floor(Math.random() * colors.length);
+			return colors[u];
+
+		}
+	</script>
+
+
+</body>
+</html>
