@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>balls5</title>
+<style>
+#stage {
+	width: 300px;
+	height: 300px;
+	position: relative;
+}
+
+canvas {
+	position: absolute;
+}
+</style>
+
+</head>
+<body>
+	<div id="stage">
+		<canvas id="background-layer" width="300" height="300"></canvas>
+		<canvas id="game-layer" width="300" height="300"></canvas>
+
+
+
+	</div>
+	<div>
+	<em>Unelastischer Stoß. Die Masse einer Kugel wird durch die Fläche dargestellt.</em>
+	</div>
+	<script type="text/javascript">
+		var c1 = document.getElementById("background-layer");
+		var ctx1 = c1.getContext("2d");
+
+		var c2 = document.getElementById("game-layer");
+		var ctx2 = c2.getContext("2d");
+		var pa = true;
+		var fps = 25;
+		var area = 190;
+		var margin = 20;
+		var dx = area / 2;
+		var dy = area / 2;
+		document.body.onload = function() {
+			background();
+			//make();
+			makeBall(40, 70, 20, 2, 0, 'red');
+			makeBall(130, 70, 20, 0, 0, '#00CC00');
+			makeBall(150, 30, 18, -1.5, 1, '#DAA520');
+			makeBall(60, 120, 30, 1.5, 2, 'white');
+			makeBall(120, 100, 14, 1.5, 1.3, 'blue');
+			animate();
+		};
+		function background() {
+			ctx1.fillStyle = '#006400';
+			ctx1.fillRect(0, 0, c1.width, c1.height);
+			ctx1.strokeStyle = "white";
+			ctx1.strokeRect(margin, margin, area, area);
+		}
+
+		
+	
+		var coll = false; //for testing 
+		
+		function animate() {
+			if (pa) {
+				ctx2.clearRect(0, 0, c2.width, c2.height);
+
+				for (i = 0; i < balls.length; i++) {
+					var b = balls[i];
+					// move ball
+					b.x += b.dx;
+					b.y += b.dy;
+					collisionBetweenBallAndBound(b);
+					//checkCollisionBetweenBallAndBall(b,i);
+					paintBall(b);
+					
+
+				}
+
+				collisionBetweenBallAndBall();
+				setTimeout(function() {
+					requestAnimationFrame(animate);
+
+				}, 1000 / fps);
+			}
+		}
+
+		var balls = [];
+		function makeBall(x,y,radius,dx,dy,color){
+			var ball = {
+					x : x,
+					y : y,
+					size : radius,
+					color : color,
+					dx : dx,
+					dy : dy
+				}
+				balls.push(ball);	
+		}
+
+
+		function stop() {
+			console.log("stop");
+			
+			
+			pa = pa ? false : true;
+			if (pa)
+				animate();
+
+		}
+
+		function paintBall(b) {
+
+			ctx2.fillStyle = b.color;
+			ctx2.beginPath();
+
+			ctx2.arc(b.x, b.y, b.size / 2, 0, 2 * Math.PI);
+			ctx2.fill();
+
+		}
+		function computeNewDirections(b1, b2) {
+			// mass == area
+			var m1 = Math.PI * Math.pow((b1.size / 2), 2);
+			var m2 = Math.PI * Math.pow((b2.size / 2), 2);
+			//mass == volumina
+			//var m1 = 4 / 3 * Math.PI * Math.pow((b1.size / 2), 3);
+			//var m2 = 4 / 3 * Math.PI * Math.pow((b2.size / 2), 3);
+			var dzx = b1.x - b2.x;
+			var dzy = b1.y - b2.y;
+			
+			var rl = Math.pow(dzx, 2) + Math.pow(dzy, 2);
+			//skalarprodukte
+			var v1d = b1.dx * dzx + b1.dy * dzy;
+			var v2d = b2.dx * dzx + b2.dy * dzy;
+			
+			//ball 1
+			var mr1 = 2 * m2 / (m1 + m2);
+			//console.log("mr1:" + mr1);
+			//neue Richtung auch abhaengig von Massenvehältnis mrx
+			b1.dx = b1.dx - dzx * (v1d - v2d) * mr1 / rl;
+			b1.dy = b1.dy - dzy * (v1d - v2d) * mr1 / rl;
+			//mass adj
+
+			//neue richtung
+			//ball 2
+			var mr2 = 2 * m1 / (m1 + m2);
+			//console.log("mr2:" + mr2);
+			//neue Richtung auch abhaengig von Massenvehältnis mrx
+			b2.dx = b2.dx - dzx * (v2d - v1d) * mr2 / rl;
+			b2.dy = b2.dy - dzy * (v2d - v1d) * mr2 / rl;
+
+		}
+		
+		
+
+		function collisionBetweenBallAndBall() {
+			coll=false;
+			//          for testing
+			// 			if (coll){
+			// 			coll=false;
+			// 				return;
+			// 			}
+			for (i = 0; i < balls.length; i++) {
+				for (j = i + 1; j < balls.length; j++) {
+					var b1 = balls[i];
+					var b2 = balls[j];
+					var distX = Math.abs(b1.x - b2.x);
+					var distY = Math.abs(b1.y - b2.y);
+					var rr = b1.size / 2 + b2.size / 2;
+
+					var euklD = Math.pow(Math.pow(b1.x - b2.x, 2)
+							+ Math.pow(b1.y - b2.y, 2), .5);
+
+					if (euklD <= rr) {
+
+						coll = true;
+						//console.log("collision: " + euklD);
+						//stop();
+						
+						computeNewDirections(b1, b2);
+
+					}
+				}
+			}
+			
+		}
+		function collisionBetweenBallAndBound(b){
+			if (b.x <= (margin + b.size / 2)) {
+				
+				b.x = margin + b.size / 2;
+				b.dx = b.dx * -1;
+
+			}
+			if (b.x > (margin + area - b.size / 2)) {
+				
+				b.dx = b.dx * -1;
+				b.x = (margin + area - b.size / 2);
+			}
+
+			if (b.y <= (margin + b.size / 2)) {
+				
+				b.y = margin + b.size / 2;
+				b.dy = b.dy * -1;
+
+			}
+			if (b.y > (margin + area - b.size / 2)) {
+				
+				b.y = margin + area - b.size / 2;
+				b.dy = b.dy * -1;
+
+			}
+			
+		}
+		
+
+		c2.addEventListener('mousedown', stop, false);
+	</script>
+
+
+</body>
+</html>
