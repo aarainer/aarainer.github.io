@@ -48,7 +48,7 @@ top:0px;
 var audioContext = new (window.webkitAudioContext || window.AudioContext)();
 var pinkNoise = audioContext.createPinkNoise();
 var pinkGain = audioContext.createGain();
-pinkGain.gain.value = 0.2;
+pinkGain.gain.value = 0.1;
 pinkNoise.connect(pinkGain);
 	
 window.onload = function()  {
@@ -134,8 +134,8 @@ var canvas2 = document.getElementById('layer2');
 	}
 	
 	}
-requestAnimationFrame(movediv) // call requestAnimationFrame and pass into it animation function
-
+requestAnimationFrame(movediv); // call requestAnimationFrame and pass into it animation function
+sound(true);
 
 window.onfocus = function() {
    //console.log('has focus');
